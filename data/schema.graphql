@@ -1,0 +1,83 @@
+# The base element for a file
+type Element implements Node {
+  # The ID of an object
+  id: ID!
+
+  # The number of the fact
+  number: String
+
+  # The facts related to the element
+  facts(after: String, first: Int, before: String, last: Int): FactConnection
+}
+
+# An infraction
+type Fact implements Node {
+  # The ID of an object
+  id: ID!
+
+  # The article type of the infraction
+  articleType: String
+}
+
+# A connection to a list of items.
+type FactConnection {
+  # Information to aid in pagination.
+  pageInfo: PageInfo!
+
+  # A list of edges.
+  edges: [FactEdge]
+}
+
+# An edge in a connection.
+type FactEdge {
+  # The item at the end of the edge
+  node: Fact
+
+  # A cursor for use in pagination
+  cursor: String!
+}
+
+type Mutation {
+  updateFact(input: UpdateFactInput!): UpdateFactPayload
+}
+
+# An object with an ID
+interface Node {
+  # The id of the object.
+  id: ID!
+}
+
+# Information about pagination in a connection.
+type PageInfo {
+  # When paginating forwards, are there more items?
+  hasNextPage: Boolean!
+
+  # When paginating backwards, are there more items?
+  hasPreviousPage: Boolean!
+
+  # When paginating backwards, the cursor to continue.
+  startCursor: String
+
+  # When paginating forwards, the cursor to continue.
+  endCursor: String
+}
+
+type Query {
+  # Fetches an object given its ID
+  node(
+    # The ID of an object
+    id: ID!
+  ): Node
+  facts(ids: [Int]): [Fact]
+  elements(ids: [Int]): [Element]
+}
+
+input UpdateFactInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type UpdateFactPayload {
+  fact(ids: [Int]): [Fact]
+  clientMutationId: String
+}
